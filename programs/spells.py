@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import argparse
 import textwrap
 import json
@@ -20,13 +21,21 @@ LEVEL_STRING = {
     9: '9th level {school} {ritual}',
 }
 
-with open('data/spells.json') as json_data:
+with open('../data/spells.json') as json_data:
     SPELLS = json.load(json_data)
+
+num = 0
+for name, spell in SPELLS.items():
+    num+=1
+    print(name)
+    for key, val in spell.items():
+        print(key, val)
+print(num)
+exit()
 
 
 def print_spell(name, level, school, range, time, ritual, duration, components,
                 material, text, source=None, source_page=None, **kwargs):
-    #global SPELLS_TRUNCATED, SPELLS_TOTAL
     header = LEVEL_STRING[level].format(school=school.lower(), ritual='ritual' if ritual else '').strip()
 
     if material is not None:
@@ -106,6 +115,7 @@ HIGHLIGHTS = {
 }
 highlights = []
 
+
 def build_regex():
     rstr = ''
     for key, val in HIGHLIGHTS.items():
@@ -113,6 +123,7 @@ def build_regex():
         highlights.append(val)
     rstr=rstr[:-1]
     return rstr
+
 
 def highlighter(text):
     regexstr = build_regex()
@@ -133,7 +144,6 @@ def highlighter(text):
     # classes
     # saving throws
     #
-
 
 
 def get_spells(classes=None, levels=None, schools=None, names=None):
