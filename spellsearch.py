@@ -75,7 +75,7 @@ HIGHLIGHTS = OrderedDict({
 })
 
 
-def general_filter(general, spells):
+def filter_description(general, spells):
     filtered_spells = []
     filter_list = general.split(',')
     for spell in spells:
@@ -89,14 +89,19 @@ def general_filter(general, spells):
 def filter_classes(classes, spells):
     filter_list = classes.split(',')
     filtered_spells = []
-
     for spell in spells:
+        get = True
         if spell not in filtered_spells:
             for search in filter_list:
                 regex = re.compile(r'{}'.format(search), re.I)
+                subget = False
                 for c in spell['classes']:
                     if regex.match(c):
-                        filtered_spells.append(spell)
+                        subget = True
+                if not subget:
+                    get = False
+            if get:
+                filtered_spells.append(spell)
     return filtered_spells
 
 
@@ -169,21 +174,24 @@ def print_spell(spell):
         output = ''
         #just names
         if PRINT_FLAG == 'n':
-            output += name
+            #print("here", name)
+            output = name
+
 
         #short
-        if PRINT_FLAG == 's':
+        elif PRINT_FLAG == 's':
             output += name + '\n'
             output += type + '\n'
             output += "Casting Time: " + casting_time + '\n'
     else:
         output = name + '\n'
         output += '-' * 80 + '\n'
-        output += type + '\n'
-        output += raw_components + '\n'
-        output += "Casting Time: " + casting_time + '\n'
+        output += textwrap.fill(type, 80) + '\n'
+        output += textwrap.fill(raw_components, 80) + '\n'
+        output += textwrap.fill("Casting Time: " + casting_time, 80) + '\n'
         output += textwrap.fill(description, 80) + '\n'
         output += '-' * 80
+
     return output
 
 
@@ -202,12 +210,15 @@ def highlighter(text):
     regexstr = build_highlighter_regex()
     regex = re.compile(r'{}'.format(regexstr), re.I)
     i = 0
-    output = ''
+    h_output = ''
     for m in regex.finditer(text):
-        output += "".join([text[i:m.start()], highlights[m.lastindex-1], text[m.start():m.end()], '\033[0m'])
+        h_output += "".join([text[i:m.start()], highlights[m.lastindex-1], text[m.start():m.end()], '\033[0m'])
         i = m.end()
     try:
-        print("".join([output, text[m.end():]]))
+        if h_output != '':
+            print(h_output)
+        else:
+            print(text)
     except:
         print(text)
 
@@ -221,11 +232,11 @@ if __name__ == '__main__':
     parser.add_argument("-n", "--names", type=str, action='store', dest='names')
     parser.add_argument("-l", "--levels", type=str, action='store', dest='levels')
     parser.add_argument("-p", "--print", type=str, action='store', dest='print')
-    parser.add_argument("-g", "--general", type=str, action='store', dest='general')
+    parser.add_argument("-d", "--description", type=str, action='store', dest='description')
     parser.add_argument("gen", default=[], nargs='*', action='store')
     args = parser.parse_args()
 
-    with open('data/newspells.json') as json_data:
+    with open('/home/fostrb/PycharmProjects/dmshell/data/newspells.json') as json_data:
         SPELLS = json.load(json_data)
     if args.print:
         if args.print in ['n', 's']:
@@ -237,8 +248,8 @@ if __name__ == '__main__':
         spells = filter_name(args.names, spells)
     if args.levels:
         spells = filter_levels(args.levels, spells)
-    if args.general:
-        spells = general_filter(args.general, spells)
+    if args.description:
+        spells = filter_description(args.general, spells)
     if args.gen:
         spells = filter_gen(args.gen, spells)
 
@@ -246,7 +257,7 @@ if __name__ == '__main__':
     for spell in spells:
         outputstr += print_spell(spell) + '\n'
     highlighter(outputstr)
-    print(str(len(spells)) + " spells matched all criteria.")
+    print(str(len(spells)) + " spells matched criteria.")
 
 # search criteria:
 
