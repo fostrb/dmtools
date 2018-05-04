@@ -2808,7 +2808,7 @@
     "level":"5th-level",
     "school":"Evocation",
     "class":"Cleric, Paladin, Warlock",
-    "archetype":"Cleric: Light, War<br />Paladin: Devotion<br/> Warlock: Celestial, Fiend",
+    "archetype":"Cleric: Light, War<br />Paladin: Devotion <br/> Warlock: Celestial, Fiend",
     "domains":"Light, War",
     "oaths":"Devotion",
     "patrons":"Celestial, Fiend"
@@ -3205,7 +3205,7 @@
     "level":"4th-level",
     "school":"Conjuration",
     "class":"Cleric, Paladin",
-    "archetype":"Paladin: Crown, Devotion< br />Warlock: Celestial<br />Cleric: Life, Light",
+    "archetype":"Paladin: Crown, Devotion<br />Warlock: Celestial<br />Cleric: Life, Light",
     "domains":"Life, Light",
     "oaths":"Crown, Devotion",
     "patrons":"Celestial"

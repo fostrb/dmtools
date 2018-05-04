@@ -10,6 +10,31 @@ def cleanhtml(raw_html):
   return cleantext
 
 
+def parse_archetype(atype):
+    #print(atype)
+    # <CLASS>: atype1, atype2...'</br>'<CLASS>: atype1, atype2
+
+    atypes = {}
+    splstr = re.split('<br />|<br/>', atype)
+
+    for each in splstr:
+        #print(each.strip())
+        a = each.split(":")
+        main_class = a[0]
+        #print(each)
+        #print(main_class + "-----")
+        subclasses = ''
+        for i in range(1, len(a)):
+            subclasses += (a[i].strip())
+        subclasses = subclasses.split(',')
+        atypes[main_class] = []
+        for sc in subclasses:
+            atypes[main_class].append(sc.strip())
+            print(sc)
+        #print(atypes)
+    return atypes
+
+
 with open("data/asimonespells.json") as filedata:
     spells = json.load(filedata)
 
@@ -63,6 +88,7 @@ for spell in spells:
                 v = False
             else:
                 print("ERROR")
+                exit(1)
             newspell['ritual'] = v
 
         elif key == 'duration':
@@ -90,8 +116,7 @@ for spell in spells:
 
         elif key == 'archetype':
             # This will need heavy cleanup.
-            #print(val)
-            pass
+            newspell['archetypes'] = parse_archetype(val)
 
         elif key == 'domains':
             doms = val.replace(' ', '').split(",")
