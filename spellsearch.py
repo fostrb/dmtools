@@ -250,18 +250,26 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     # for now, pass a comma separated list and parse on your own
-    parser.add_argument("-i", '--infile', type=str, action='store', dest='infile')
-    parser.add_argument("-e", '--export', type=str, action='store', dest='export')
-    parser.add_argument("-c", "--class", type=str, action='store', dest='classes')
-    parser.add_argument("-n", "--names", type=str, action='store', dest='names')
-    parser.add_argument("-l", "--levels", type=str, action='store', dest='levels')
-    parser.add_argument("-p", "--print", type=str, action='store', dest='print')
-    parser.add_argument("-d", "--description", type=str, action='store', dest='description')
+    parser.add_argument("-i", '--infile', type=str, action='store', dest='infile',
+                        help='Import a json file of spells to work with instead of the entire list.')
+    parser.add_argument("-e", '--export', type=str, action='store', dest='export',
+                        help='Json dump query to a file.')
+    parser.add_argument("-c", "--class", type=str, action='store', dest='classes',
+                        help="Search class names.")
+    parser.add_argument("-n", "--names", type=str, action='store', dest='names',
+                        help="Search spell names")
+    parser.add_argument("-l", "--levels", type=str, action='store', dest='levels',
+                        help="Filter by spell level.")
+    parser.add_argument("-p", "--print", type=str, action='store', dest='print',
+                        help="Print formatting. 's'=short, 'n'=just names.")
+    parser.add_argument("-d", "--description", type=str, action='store', dest='description',
+                        help='Filter by description.')
     parser.add_argument("-r", "--random", type=str, action='store', dest='random',
                         help="Choose X spells from filtered list. This filter will run last.")
-    parser.add_argument("gen", default=[], nargs='*', action='store')
+    parser.add_argument("gen", default=[], nargs='*', action='store',
+                        help="Filter the spell's raw Json.")
     args = parser.parse_args()
-
+    SPELLS = []
     if not args.infile:
         with open('data/newspells.json') as json_data:
             SPELLS = json.load(json_data)
