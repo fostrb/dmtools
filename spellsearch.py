@@ -2,7 +2,9 @@ import argparse
 import json
 import textwrap
 import re
+from random import randint
 from collections import OrderedDict
+
 
 # TODO: Improper highlighter behavior when user searches overlap builtin regexes.
 # A solution might be to not hard-code the entire escape values, and break them into
@@ -75,6 +77,27 @@ HIGHLIGHTS = OrderedDict({
 })
 
 
+def filter_random(random, spells):
+    try:
+        r = int(random)
+        rlist = []
+
+        if r <= len(spells):
+            for i in range(r):
+                index = 0
+                while spells[index] not in rlist:
+                    index = randint(0, len(spells)-1)
+                    rlist.append(spells[index])
+            return rlist
+
+        else:
+            print("Length of previously filtered spells is less than " + str(r))
+            return spells
+    except AttributeError as e:
+        print(e)
+        exit(1)
+
+
 def filter_description(general, spells):
     filtered_spells = []
     filter_list = general.split(',')
@@ -134,7 +157,7 @@ def filter_name(names, spells):
 
 
 def filter_levels(levels, spells):
-    # generate a list of levels that matches the input level string
+    # generate a list of levels that matches the input level string(s)
     filtered_spells = []
     filter_list = levels.split(',')
 
@@ -227,17 +250,28 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     # for now, pass a comma separated list and parse on your own
-    parser.add_argument("-i", '--import', type=str, action='store', dest='import')
+    parser.add_argument("-i", '--infile', type=str, action='store', dest='infile')
+    parser.add_argument("-e", '--export', type=str, action='store', dest='export')
     parser.add_argument("-c", "--class", type=str, action='store', dest='classes')
     parser.add_argument("-n", "--names", type=str, action='store', dest='names')
     parser.add_argument("-l", "--levels", type=str, action='store', dest='levels')
     parser.add_argument("-p", "--print", type=str, action='store', dest='print')
     parser.add_argument("-d", "--description", type=str, action='store', dest='description')
+    parser.add_argument("-r", "--random", type=str, action='store', dest='random',
+                        help="Choose X spells from filtered list. This filter will run last.")
     parser.add_argument("gen", default=[], nargs='*', action='store')
     args = parser.parse_args()
 
-    with open('/home/fostrb/PycharmProjects/dmshell/data/newspells.json') as json_data:
-        SPELLS = json.load(json_data)
+    if not args.infile:
+        with open('data/newspells.json') as json_data:
+            SPELLS = json.load(json_data)
+    else:
+        try:
+            with open(args.infile) as json_data:
+                SPELLS = json.load(json_data)
+        except:
+            print("issue with your file")
+            exit(1)
     if args.print:
         if args.print in ['n', 's']:
             PRINT_FLAG = args.print
@@ -253,11 +287,19 @@ if __name__ == '__main__':
     if args.gen:
         spells = filter_gen(args.gen, spells)
 
+    if args.random:
+        spells = filter_random(args.random, spells)
     outputstr = ''
     for spell in spells:
         outputstr += print_spell(spell) + '\n'
     highlighter(outputstr)
     print(str(len(spells)) + " spells matched criteria.")
+    if args.export:
+        try:
+            with open(args.export, 'w') as exportFile:
+                json.dump(spells, fp=exportFile)
+        except:
+            print("issue doing that")
 
 # search criteria:
 
