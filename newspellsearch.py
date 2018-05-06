@@ -7,8 +7,6 @@ from collections import OrderedDict
 
 from ansi_highlighter.ansi_highlighter import AnsiHighlighter
 
-# TODO: database would be easier and cleaner than json
-
 # TODO: add filters for archetypes, domains, etc...
 # TODO: implement union/intersect/etc within class search/filter
 # TODO: print formatting update
@@ -16,6 +14,7 @@ from ansi_highlighter.ansi_highlighter import AnsiHighlighter
 # TODO: sort by field (put this shit in a database)
 
 # TODO: add a switch for highlighted printing
+# TODO: 'gen' filter not case insensitive.
 
 '''
 notes:
@@ -142,7 +141,7 @@ def filter_classes(classes, spells):
             for search in filter_list:
                 regex = re.compile(r'{}'.format(search), re.I)
                 subget = False
-                for c in spell['classes']:
+                for c in spell['cclasses']:
                     if regex.match(c):
                         subget = True
                 if not subget:
@@ -214,7 +213,7 @@ def print_spell(spell):
 
     description = spell['description']
     casting_time = spell['casting_time']
-    classes = spell['classes']  # list of strings
+    classes = spell['cclasses']  # list of strings
 
     duration = spell['duration']
     level = spell['level']
@@ -222,7 +221,7 @@ def print_spell(spell):
     ritual = spell['ritual']  # bool
     school = spell['school']
     source = spell['source']
-    material = spell['material']
+    #material = spell['material']
 
     if PRINT_FLAG:
         output = ''
