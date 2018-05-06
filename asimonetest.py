@@ -3,6 +3,8 @@ import re
 
 # TODO: add limited html tag interpretation to cleanhtml
 
+# TODO: parse the remaining subclass types
+
 
 def cleanhtml(raw_html):
   cleanr = re.compile('<.*?>')
@@ -29,7 +31,7 @@ def parse_archetype(atype):
         atypes[main_class] = []
         for sc in subclasses:
             atypes[main_class].append(sc.strip())
-            print(sc)
+            #print(sc)
         #print(atypes)
     return atypes
 
@@ -111,14 +113,15 @@ for spell in spells:
         elif key == 'class':
             classes = val.replace(' ', '').split(',')
             #print(classes)
-            newspell['classes'] = classes
+            newspell['cclasses'] = classes
 
         elif key == 'archetype':
             # This will need heavy cleanup.
             newspell['archetypes'] = parse_archetype(val)
 
-        elif key == 'domains':
+        elif key == 'domains':  # it's a list
             doms = val.replace(' ', '').split(",")
+            #print(doms)
             newspell['domains'] = doms
 
         elif key == 'patrons':
@@ -134,8 +137,9 @@ for spell in spells:
             newspell['circles'] = circles
 
         elif key == 'subclass':
-            #subclass = val.replace(' ', '').split(",")
-            newspell['subclass'] = val
+            subclass = val.replace(' ', '').split(",")
+            print(subclass)
+            newspell['subclass'] = subclass
 
         else:
             print(key)
@@ -151,4 +155,3 @@ with open('better_spelldump.json') as spdoc:
     nspells = json.load(spdoc)
 
 print(len(nspells))
-

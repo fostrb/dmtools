@@ -221,6 +221,9 @@ def print_spell(spell):
     range = spell['range']
     ritual = spell['ritual']  # bool
     school = spell['school']
+    source = spell['source']
+    material = spell['material']
+
     if PRINT_FLAG:
         output = ''
         #just names
