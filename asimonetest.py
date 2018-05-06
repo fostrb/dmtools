@@ -9,7 +9,6 @@ def cleanhtml(raw_html):
   cleantext = re.sub(cleanr, '', raw_html)
   return cleantext
 
-
 def parse_archetype(atype):
     #print(atype)
     # <CLASS>: atype1, atype2...'</br>'<CLASS>: atype1, atype2
@@ -112,7 +111,7 @@ for spell in spells:
         elif key == 'class':
             classes = val.replace(' ', '').split(',')
             #print(classes)
-            newspell['class'] = classes
+            newspell['classes'] = classes
 
         elif key == 'archetype':
             # This will need heavy cleanup.

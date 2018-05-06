@@ -7,11 +7,32 @@ from collections import OrderedDict
 
 from ansi_highlighter.ansi_highlighter import AnsiHighlighter
 
+# TODO: database would be easier and cleaner than json
+
 # TODO: add filters for archetypes, domains, etc...
 # TODO: implement union/intersect/etc within class search/filter
 # TODO: print formatting update
 
+# TODO: sort by field (put this shit in a database)
+
 # TODO: add a switch for highlighted printing
+
+'''
+notes:
+- This is insanely slow on crappy machines - it's the highlighter.
+    The highlighter attempts to match for each group in each match
+        from the master regex's iteritems(). Meaning, most of them
+        will be Null matches, and therefore useless.
+        
+    The good solution: just fix the existing code.
+    The solution that sounds cool: Totally separate the text 
+        generator and the highlight display.
+'''
+
+# output:
+# <name>
+# <level> <school>
+#
 
 
 # to be used for highlighting searches
@@ -92,8 +113,10 @@ def filter_random(random, spells):
             return rlist
 
         else:
-            print("Length of previously filtered spells is less than " + str(r))
-            return spells
+            print("Length of previously filtered spells is " + str(len(spells)) + "\n"
+                "random " + str(r) + " failed.")
+            #return spells
+            exit(1)
     except AttributeError as e:
         print(e)
         exit(1)
@@ -282,7 +305,7 @@ if __name__ == '__main__':
             with open(args.export, 'w') as exportFile:
                 json.dump(spells, fp=exportFile)
         except:
-            print("issue doing that")
+            print("issue exporting")
 
 # search criteria:
 
