@@ -17,8 +17,7 @@ class DMShell(object):
     def load_programs(self):
         for name, cls in programs.__dict__.items():
             if isinstance(cls, type):
-                iprog = cls()
-                if isinstance(iprog, DMProgram):
+                if issubclass(cls, DMProgram):
                     self.programs.append(iprog)
 
     def parseline(self, line):
